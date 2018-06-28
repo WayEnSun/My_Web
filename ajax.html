@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+	<title>Web大作业</title>
+       <link href="css/bootstrap.min.css" rel="stylesheet">
+	  <style>	  
+	  .black_overlay{ 
+            display: block; 
+            position: absolute; 
+            top: 0%; 
+            left: 0%; 
+            width: 100%; 
+            height: 100%; 
+            background-color: black; 
+            z-index:1001; 
+            -moz-opacity: 0.8; 
+            opacity:.80; 
+            filter: alpha(opacity=88); 
+        } 
+        .white_content { 
+            display: block; 
+            position: absolute; 
+            top: 25%; 
+            left: 25%; 
+            width: 55%; 
+            height: 55%; 
+            padding: 20px; 
+            border: 10px solid grey; 
+            background-color: white; 
+            z-index:1002; 
+            overflow: auto; 
+        } 	  
+	    .white_content2 { 
+            display: none; 
+            position: absolute; 
+            top: 25%; 
+            left: 25%; 
+            width: 55%; 
+            height: 55%; 
+            padding: 20px; 
+            border: 10px solid grey; 
+            background-color: white; 
+            z-index:1002; 
+            overflow: auto; 
+        } 	  
+	  </style>	  
+</head>
+<body id="helloo" background="1.jpg" data-spy="scroll" data-target="#myScrollspy"> 
+<div class="container" id="app1">
+<div class="jumbotron">
+   <h1>你好，{{UserName}}</h1>		  
+</div>
+<!--------------------------------------------------------------------------------->	
+   <div>
+	<nav class="navbar navbar-default" role="navigation">
+    <div>
+        <ul class="nav navbar-nav">
+            <li><a href="#" @click="tab1(Show1),Read">我的一天</a></li>
+            <li><a href="#" @click="tab2(Show2)">TO-DO</a></li>
+            <template v-for="list ,index in lists">
+
+                <li><a @click="InsertPage(index)">{{list}}</a></li>
+			
+            </template>			 
+			<li><a href = "javascript:void(0)" @click="tab4(Show4) ">新建清单</a></li> 
+
+        </ul>		
+    </div>
+	<div class="input-group col-md-3" style="margin-top:0px positon:right">  
+        
+            <span class="input-group-btn"style="color:grey">  
+               <input name="content" type="text" class="form-control" placeholder="请输入字段名" v-model="regex"> 
+			   <button type="submit" class="btn btn-default" @click="tab5(Show5)">查找</button>
+			   <button  class="btn btn-default" @click="KO">注销</button> 
+               <button  class="btn btn-default" onclick="Change()">换肤</button>  			   
+            </span>  	
+    </div>   
+    </nav>
+	</div>
+	
+
+	 <div class="jumbotron">			 
+            <div class="col-xs-15" style="border:3px solid black" v-show="Show1">		
+		          <div class="input-group" >				  
+				        <span class="input-group-btn">				  
+					          <button type="submit" class="btn btn-default" @click="UrgencyOrder">按优先级排序</button>
+					    </span>				
+				   </div>		        
+		     <table class="table table-striped">				   
+                <thead>
+                    <tr>
+                     <!---->  
+					 <th>清单</th>		
+                     <th>任务</th>					
+                     <th>日期</th>
+					 <th>优先级</th>
+                     <th>完成？</th>	
+					 <th>编号<th>
+					
+                    </tr>
+                </thead>
+               <tbody>
+			      <template v-for="HW,index in homework">
+               <tr>
+			    <!---->
+				<td>{{HW.List}}</td>
+                <td>{{HW.work }}</td>				
+                <td>{{HW.EndDate }} </td>
+				<td>{{HW.urgency}}</td>
+                <td>{{HW.completed }}</td>
+				<td>{{HW.id }}</td>				
+               </tr>
+                 </template>
+              </tbody>
+             </table>
+			    <hr>
+			    <hr>
+			    <hr>
+			    <hr>
+			    <hr>	
+			</div> 
+
+<!--------------------------------------------------------------------------------->			
+            <div class="col-xs-15" style="border:3px solid black" v-show="Show2">					   
+		         <table class="table table-striped">				   
+                <thead>
+                    <tr>					 
+                     <th>任务</th>
+                     <th>年</th>
+					 <th>月</th>
+					 <th>日</th>
+					 <th>时</th>
+					 <th>分</th>
+                     <th>紧急程度</th>
+                     <th>保存</th>
+                    </tr>
+                </thead>
+               <tbody>			      
+               <tr>
+                <td><input type="text" name="content" class="form-control" id="exampleInputEmail1" placeholder="添加To-Do" v-model="newHome.work" ></td>
+                <td><input type="text" name="content" class="form-control" id="exampleInputEmail1" placeholder="添加年" v-model="newHome.endYear" ></td>
+				<td><input type="text" name="content" class="form-control" id="exampleInputEmail1" placeholder="添加月" v-model="newHome.endMonth" ></td>
+				<td><input type="text" name="content" class="form-control" id="exampleInputEmail1" placeholder="添加日" v-model="newHome.endDay" ></td>
+				<td><input type="text" name="content" class="form-control" id="exampleInputEmail1" placeholder="添加小时" v-model="newHome.endHour" ></td>
+				<td><input type="text" name="content" class="form-control" id="exampleInputEmail1" placeholder="添加分钟" v-model="newHome.endMinute" ></td>
+                <td><input type="text" name="content" class="form-control" id="exampleInputEmail1" placeholder="添加优先级" v-model="newHome.urgency" ></td>
+                <td><button  class="btn btn-default" @click="save">Save</button></td>
+			   </tr>
+              </tbody>
+            </table>  				   
+				  <fieldset>
+                        <legend>解决中</legend>
+                   </fieldset>				
+			<table class="table table-striped">				   
+                <thead>
+                    <tr>
+                     <th>任务</th>
+                     <th>日期</th>
+					 <th>优先级</th>
+                     <th>完成？</th>
+					 <th>马上结束</th>
+                    </tr>
+                </thead>
+               <tbody>
+			      <template v-for="HW,index in homework">
+               <tr v-if="HW.completed==false">
+                <td>{{HW.work }}</td>
+                <td>{{HW.EndDate }} </td>
+				<td>{{HW.urgency }} </td>				
+                <td>{{HW.completed }}</td>
+                 <td> <input @click="deletePerson(index)" type="checkbox"></td>
+               </tr>
+                 </template>
+              </tbody>
+            </table>
+				
+				 <fieldset>
+                        <legend>已解决</legend>
+                   </fieldset>
+				<div id="id1" style="display:block"class="col-lg-5  pull-right">
+				
+				   <button  class="btn btn-default" onclick="Hide()">隐藏</button>
+				</div>
+				<div id="id2" style="display:none" class="col-lg-5  pull-right">
+				   <button  class="btn btn-default" onclick="MyShow()">显示</button>
+				
+				</div>
+				<div id="id3" style="display:block">
+				<table class="table table-striped">
+				   
+                <thead>
+                    <tr>
+                     <th>任务</th>
+                     <th>日期</th>
+					 <th>优先级</th>
+                     <th>完成？</th>
+					 <th>删除</th>
+                    </tr>
+                </thead>
+               <tbody>
+			      <template v-for="HW,index in homework">
+               <tr v-if="HW.completed==true">
+                <td>{{HW.work }}</td>
+                <td>{{HW.EndDate }} </td>
+				<td>{{HW.urgency }} </td>		
+                <td>{{HW.completed }}</td>
+                <td> <input @click="deletePerson2(index)" type="checkbox"></td>
+               </tr>
+                 </template>
+              </tbody>
+             </table>
+			 </div>
+				
+		
+				
+			    <hr>
+			    <hr>
+			    <hr>
+			    <hr>
+			    <hr>
+			</div>           
+  <!--------------------------------------------------------------------------------->	        
+            <div class="col-xs-15" style="border:3px solid black" v-show="Show4">
+			
+			   <input type="text" name="content" class="form-control" id="exampleInputEmail1" placeholder="添加清单名" v-model="newlist" >
+                <button  class="btn btn-default" @click="addlist">新建</button>
+			
+			   <table class="table table-striped">				   
+                <thead>
+                    <tr>
+     	
+                     <th>任务</th>					
+                     <th>日期</th>
+					 <th>优先级</th>
+                     <th>完成？</th>	
+					 <th>编号 <th>
+					 <th>选择<th>
+                    </tr>
+                </thead>
+               <tbody>
+			      <template v-for="HW,index in homework">
+               <tr v-if="HW.List===''||HW.List===null">
+	
+                <td>{{HW.work }}</td>
+				
+                <td>{{HW.EndDate }} </td>
+				<td>{{HW.urgency}}</td>
+                <td>{{HW.completed }}</td>
+				<td>{{HW.id }}</td>
+			    <td> <input @click="addlist2(index)" type="checkbox"></td>
+               </tr>
+                 </template>
+              </tbody>
+             </table>
+			
+			</div>
+<!--------------------------------------------------------------------------------->	
+			<div class="col-xs-15" style="border:3px solid black" v-show="Show5">
+			<hr>
+			<hr>
+			<hr>
+			   <table class="table table-striped">
+				   
+                <thead>
+                    <tr>
+                     <th>任务</th>
+                     <th>日期</th>
+					 <th>优先级</th>
+                     <th>完成？</th>				
+                    </tr>
+                </thead>
+               <tbody>
+			      <template v-for="HW,index in homework">
+               <tr v-if="(new RegExp(regex,'g')).test(HW.work)&&HW.completed==false&&HW.work!==''&&HW.work!==null">
+                <td>{{HW.work }}</td>
+                <td>{{HW.EndDate }} </td>
+				<td>{{HW.urgency}}</td>
+                <td>{{HW.completed }}</td>
+               </tr>
+                 </template>
+              </tbody>
+             </table>
+			<hr>
+			<hr>
+			</div>			
+       
+    </div>
+
+<!--------------------------------------------------------------------------------->	
+<div id="light" class="white_content" style="background-image:url(3.jpg)">
+        <div class="form row">
+            <div class="form-horizontal col-md-offset-3" id="login_form">
+                <h3 class="form-title">LOGIN</h3>
+                <div class="col-md-9">
+                    <div class="form-group">
+                        <i class="fa fa-user fa-lg"></i>
+                        <input type="text" name="content" class="form-control required"  placeholder="输入账户名" autofocus="autofocus" maxlength="20" v-model="UserName" >
+                    </div>
+                
+                    <div class="form-group col-md-offset-9">
+                       <button type="submit" class="btn btn-default pull-right" href = "javascript:void(0)" @click="Read">登录</button>
+                       <button  class="btn btn-default pull-right"  onclick="Show()">注册</button>
+					 </div>
+					  <div id="Reg" href = "javascript:void(0)" style="display:none">
+                      <input type="text" name="content" class="form-control required"  placeholder="输入新账户" autofocus="autofocus" maxlength="20" v-model="NewAccount" >  
+                       <button type="submit" class="btn btn-default pull-right"  @click="Register">提交</button> 
+                    </div>
+					 
+                </div>
+            </div>
+        </div>   
+</div>
+ <!--------------------------------------------------------------------------------->	
+<div id="fade" class="black_overlay"></div>
+	
+     
+    <div id="fade2" class="white_content2">	     
+				  <fieldset>
+                        <legend>当前清单:{{CurrentList}}</legend>
+                   </fieldset>
+	     <table class="table table-striped" >
+				   
+                <thead>
+                    <tr>
+                     <th>任务</th>
+                     <th>日期</th>
+					 <th>优先级</th>
+                     <th>完成？</th>				
+                    </tr>
+                </thead>
+               <tbody>
+			      <template v-for="HW,index in homework">
+               <tr v-if="HW.List===CurrentList">
+                <td>{{HW.work }}</td>
+                <td>{{HW.EndDate }} </td>
+				<td>{{HW.urgency}}</td>
+                <td>{{HW.completed }}</td>
+               </tr>
+                 </template>
+              </tbody>
+             </table>	          
+				  <fieldset>
+                        <legend>未添加清单</legend>
+                   </fieldset>				   
+				      <table class="table table-striped" >				   
+                <thead>
+                    <tr>
+                     <th>任务</th>
+                     <th>日期</th>
+					 <th>优先级</th>
+                     <th>完成？</th>
+                     <th>选中</th>					 
+                    </tr>
+                </thead>
+               <tbody>
+			      <template v-for="HW,index in homework">
+               <tr v-if="HW.List===''||HW.List===null">
+                <td>{{HW.work }}</td>
+                <td>{{HW.EndDate }} </td>
+				<td>{{HW.urgency}}</td>
+                <td>{{HW.completed }}</td>
+				<td><input @click="addd(index)" type="checkbox"></td>
+               </tr>
+                 </template>
+              </tbody>
+             </table>
+	       <button  class="btn btn-default"  onclick="Disapper2()">退出</button> 
+	</div>
+
+
+</div>
+</body>
+
+
+
+<script src="js/vue.js"></script>
+<script>
+   function Change(){
+       if(document.getElementById('helloo').background=='1.jpg')
+      document.getElementById('helloo').background='2.jpg';
+	  else 
+	   document.getElementById('helloo').background='1.jpg';  
+   }
+   function Show(){
+	 document.getElementById('Reg').style.display='block';	
+	}
+	function MyShow(){
+	    document.getElementById('id1').style.display='block';
+		 document.getElementById('id3').style.display='block';
+		 document.getElementById('id2').style.display='none';
+	}
+    function Hide(){	
+	     document.getElementById('id1').style.display='none';
+		 document.getElementById('id3').style.display='none';
+		 document.getElementById('id2').style.display='block';
+	}
+    function Disapper(){
+	 document.getElementById('light').style.display='none';
+	 document.getElementById('fade').style.display='none';	
+	}
+	 function Disapper2(){
+	 document.getElementById('fade2').style.display='none';
+	 document.getElementById('fade').style.display='none';
+	}
+	function Appear(){
+	 document.getElementById('light').style.display='block';
+	 document.getElementById('fade').style.display='block';	
+	}
+	function unique(arr) 
+	{
+       var k=0;
+	   var result=[];
+	   for(var i=0;i<arr.length;i++){	   
+	          if(result.length===0){			  
+			     result.push(arr[i]);			  
+			  }
+			  else
+			  {			  
+			      for(var j=0;j<result.length;j++){				  
+				      if(arr[i]!==result[j])
+				        k++;				  
+				  }
+			      if(k===result.length)
+				   result.push(arr[i]);
+			        k=0;			  
+			  }	   
+	   }
+     return result;
+    }    
+	var vm = new Vue({
+    el: '#app1',
+    data: {
+		CurrentList:'',
+	    UserName:'',
+		NewAccount:'',
+	    regex:'',
+	    index:-1,
+        Show1:true,
+		Show2:false,
+		Show3:false,
+		Show4:false,
+		Show5:false,
+		newHome:{
+		   id :0,
+		 'work':'',		  
+		  date:new Date(),
+		  EndDate:'', /*endYear+'-'+endMonth+'-'+endDay+'-'+endHour+'-'+endMinute,*/
+		  endYear:0,
+		  endMonth:0,
+		  endDay:0,
+		  endHour:0,
+		  endMinute:0,
+		  urgency:0 ,		
+		  completed:false,
+		  List:''
+		},
+		newlist:'',
+		lists:[
+		],
+		hh:[
+		],
+		h:[
+		]
+		,
+        homework: [
+			      ]
+ 				  
+    },
+    methods: {
+        tab1(Show1) {
+            this.Show1 = true;
+			this.Show2 = false;
+			this.Show3 = false;
+			this.Show4 = false;
+            this.Show5 = false;			
+        },
+		tab2(Show2) {
+            this.Show2 = true;
+			this.Show1 = false;
+			this.Show3 = false;
+			this.Show4 = false;
+			this.Show5 = false;	
+
+        },
+		tab3(Show3) {
+            this.Show3 = true;
+			this.Show1 = false;
+			this.Show2 = false;
+			this.Show4 = false;
+			this.Show5 = false;	
+
+        },
+		tab4(Show4) {
+            this.Show4 = true;
+			this.Show1 = false;
+			this.Show2 = false;
+			this.Show3 = false;
+			this.Show5 = false;	
+
+        },
+		tab5(Show5) {
+            this.Show5 = true;
+			this.Show1 = false;
+			this.Show2 = false;
+			this.Show3 = false;
+			this.Show4 = false;	
+
+        },
+		KO(){
+		   this.lists=[];
+		   this.homework=[];
+		   document.getElementById('light').style.display='block';
+	       document.getElementById('fade').style.display='block';		
+		},
+	    addlist(){
+		  this.lists.push(this.newlist);		
+		},
+		addlist2(index){		
+		  this.homework[index].List=this.newlist;
+		  testAjax5(index,this.newlist);		
+		},
+		Register(){		
+		   var xx=testAjax4(this.NewAccount);//
+		   console.log(xx);
+		  if(xx.err==="ERROR"){
+		     alert("注册失败！");		     
+		  }
+		  else{
+		     alert("注册成功！")		 	  
+		  }
+		},
+        Read()
+		{		 
+		  var xx=testAjax1(this.UserName);//
+		  if(xx.err==="ERROR"){
+		     alert("没有这个账户");		     
+		  }
+		  else
+		  {
+		  Disapper();
+           
+		  for(var i=0;i<xx.length;i++)
+		   {
+		    this.newHome.id=xx[i].id;
+		    this.newHome.work=xx[i].work;		  
+		    this.newHome.date=xx[i].dat;
+		   this.newHome.EndDate=xx[i].EndDate; 
+		   this.newHome.endYear=xx[i].endYear;
+		   this.newHome.endMonth=xx[i].endMonth;
+		   this.newHome.endDay=xx[i].endDay;
+		   this.newHome.endHour=xx[i].endHour;
+		   this.newHome.endMinute=xx[i].endMinute;
+		   this.newHome.urgency=xx[i].urgency ;
+		   this.newHome.List=xx[i].List ;
+           if(xx[i].completed==0)		   
+		   this.newHome.completed=false;
+		   else
+		     this.newHome.completed=true;  
+			 this.homework.push(this.newHome);
+			 
+			 
+			 if(this.newHome.List!==null)	 
+			   this.hh.push(this.newHome.List);
+			this.newHome = {
+				    id:0,
+					'work':'',
+		            completed:false,
+		            date:new Date(),
+					urgency:0,
+					endYear:0,
+		            endMonth:0,
+		            endDay:0,
+		           endHour:0,
+		           endMinute:0,
+		            urgency:0 ,
+		            EndDate:'',
+					List:''
+				}								       
+		    }
+			console.log(this.hh);
+			 this.lists=unique(this.hh); 
+			 console.log(this.lists);			
+		  }			
+		}
+		,
+		addd(index){
+		    this.homework[index].List=this.CurrentList;
+		
+		},
+		add(HW){		
+		   this.newQingDan.homework=HW;
+		   this.QingDanS.push(this.newQingDan);		
+		},
+		UrgencyOrder:function(){
+		  this.homework.sort(compare('urgency'));		
+		},	
+		deletePerson: function(index) {
+		        this.homework[index].completed=true;
+				testAjax3(index);
+			},
+		deletePerson2: function(index) {		       
+				this.homework.splice(index, 1);
+				testAjax6(index);
+			},
+		InsertPage:function(index){		
+		     this.CurrentList=this.lists[index];			 
+			 document.getElementById('fade2').style.display='block';
+			 document.getElementById('fade').style.display='block';		
+		},
+		save:function()
+		{		    
+		   if(this.newHome.work===''){
+		      alert('请输入任务');
+		    return ;
+		   }
+			else if(this.newHome.endYear===0)
+		   {
+		      alert('请输入年');		    
+			return ;
+
+			}
+			else if(this.newHome.endYear===0)
+		   {
+		      alert('请输入月');		    
+			return ;
+			}
+			else if(this.newHome.endMonth===0)
+		   {
+		      alert('请输入日');		    
+			return ;
+			}
+			else if(this.newHome.endDay===0)
+		   {
+		      alert('请输入天');		    
+			return ;
+			}		
+		    if(this.index===-1){
+			  this.newHome.EndDate=(this.newHome.endYear+'-'+this.newHome.endMonth+'-'+this.newHome.endDay+'-'+this.newHome.endHour+'-'+this.newHome.endMinute);           
+		      this.homework.push(this.newHome);
+              testAjax2(this.newHome);			  
+             }
+            else{
+			   this.homework[this.index].work=this.newHome.work;			
+			}  
+			 this.index = -1;			
+			  this.newHome = {
+				     id:0,
+					'work':'',
+		            completed:false,
+		            date:new Date(),
+					urgency:0,
+					endYear:0,
+		            endMonth:0,
+		            endDay:0,
+		           endHour:0,
+		           endMinute:0,
+		            urgency:0 ,
+		            EndDate:'',
+					List:''
+				}	
+		}
+    }
+});
+function compare(property){
+    return function(a,b){
+        var value1 = a[property];
+        var value2 = b[property];
+        return -(value1 - value2);
+    }
+}
+function testAjax1(ttext)
+{ 
+      text={str:ttext};	  
+    var xmlhttp;
+  if (window.XMLHttpRequest) { 
+    xmlhttp = new XMLHttpRequest();
+  } else { // code for IE6, IE5
+    xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+  }
+  xmlhttp.open("POST", "http://127.0.0.1:3000/ajaxjs.js", false);
+  xmlhttp.setRequestHeader("Content-type","application/json");
+  xmlhttp.send(JSON.stringify(text)); 
+   xmlhttp.onreadystatechange = function() 
+   { 
+         var   xx; 
+    if (xmlhttp.readyState == 4 && xmlhttp.status == 200) 
+	{	  
+       xx=JSON.parse(xmlhttp.responseText);
+    }
+	 return xx;
+  }
+  return  (xmlhttp.onreadystatechange)();
+}
+function testAjax2(text)
+{ 
+    var xmlhttp;
+  if (window.XMLHttpRequest) { 
+    xmlhttp = new XMLHttpRequest();
+  } else {
+    xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+  }
+     xmlhttp.open("POST", "http://127.0.0.1:3000/ajaxjs.js", true);
+  xmlhttp.setRequestHeader("Content-type","application/json");
+  xmlhttp.send(JSON.stringify(text));  
+}
+function testAjax3(ttext)
+{   
+    text={oo:'hello',num:ttext};
+    var xmlhttp;
+  if (window.XMLHttpRequest) { 
+    xmlhttp = new XMLHttpRequest();
+  } else { 
+    xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+  }
+     xmlhttp.open("POST", "http://127.0.0.1:3000/ajaxjs.js", true);
+  xmlhttp.setRequestHeader("Content-type","application/json");
+  xmlhttp.send(JSON.stringify(text));  
+}
+
+function testAjax4(ttext)
+{   
+    text={Reg:'hello',Account:ttext};
+    var xmlhttp;
+  if (window.XMLHttpRequest) { 
+    xmlhttp = new XMLHttpRequest();
+  } else { 
+    xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+  }
+     xmlhttp.open("POST", "http://127.0.0.1:3000/ajaxjs.js", false);
+  xmlhttp.setRequestHeader("Content-type","application/json");
+  xmlhttp.send(JSON.stringify(text)); 
+   xmlhttp.onreadystatechange = function() 
+   { 
+         var   xx; 
+    if (xmlhttp.readyState == 4 && xmlhttp.status == 200) 
+	{	  
+       xx=JSON.parse(xmlhttp.responseText);
+    }
+	 return xx;
+  }
+  return  (xmlhttp.onreadystatechange)(); 
+}
+function testAjax5(ttext,tttext)
+{   
+    text={id:ttext,Belong:tttext};
+    var xmlhttp;
+  if (window.XMLHttpRequest) { 
+    xmlhttp = new XMLHttpRequest();
+  } else { 
+    xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+  }
+     xmlhttp.open("POST", "http://127.0.0.1:3000/ajaxjs.js", true);
+  xmlhttp.setRequestHeader("Content-type","application/json");
+  xmlhttp.send(JSON.stringify(text)); 
+}
+function testAjax6(ttext)
+{   
+    text={idd:ttext};
+    var xmlhttp;
+  if (window.XMLHttpRequest) { 
+    xmlhttp = new XMLHttpRequest();
+  } else { 
+    xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+  }
+     xmlhttp.open("POST", "http://127.0.0.1:3000/ajaxjs.js", true);
+  xmlhttp.setRequestHeader("Content-type","application/json");
+  xmlhttp.send(JSON.stringify(text));  
+}
+</script>
+</html>
